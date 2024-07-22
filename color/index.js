@@ -28,12 +28,15 @@ async function init() {
         document.getElementById("webcam-container").innerHTML = "";
         document.getElementById("webcam-container").appendChild(webcam.canvas);
         labelContainer = document.getElementById("label-container");
+		console.log(metadataURL)
         for (let i = 0; i < maxPredictions; i++) { // and class labels
             labelContainer.appendChild(document.createElement("div"));
         }
     } catch (e) {
         console.log(e);
-        document.getElementById("webcam-container").innerHTML = "!カメラの許可をお願い致します。";
+		// for chrome camera setting document.
+		let camdocsurl = "https://support.google.com/chrome/answer/2693767?hl=ja&co=GENIE.Platform%3DDesktop";
+        document.getElementById("webcam-container").innerHTML = "!カメラの許可をお願い致します。" + `<a href=${camdocsurl}>やり方</a>`;
     }
 }
 
@@ -57,9 +60,14 @@ async function predict() {
             document.getElementById("color-container").style.transition = "all 0.08s";
             document.getElementById("color-container").innerHTML = prediction[0].className;
             document.getElementById("color-container").innerHTML = "車いす";
+        } else if (prediction[2].probability.toFixed(2) > 0.85) {
+            document.getElementById("label-container").style.display = "none";
+            document.getElementById("color-container").style.transition = "all 0.08s";
+            document.getElementById("color-container").innerHTML = prediction[0].className;
+            document.getElementById("color-container").innerHTML = "赤ちゃんマーク";
         } else {
             document.getElementById("label-container").style.display = "none";
-            document.getElementById("color-container").innerHTML = "";
+            document.getElementById("color-container").innerHTML = "none";
             document.getElementById("color-container").style.transition = "all 0.1s";
         }
     }
